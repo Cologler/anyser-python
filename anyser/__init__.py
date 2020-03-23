@@ -13,7 +13,10 @@ def _import_impls():
     impls_root = os.path.join(os.path.dirname(__file__), 'impls')
     for name in os.listdir(impls_root):
         if name.endswith('.py') and not name.startswith('_'):
-            importlib.import_module('.impls.' + name[:-3], __name__)
+            try:
+                importlib.import_module('.impls.' + name[:-3], __name__)
+            except ModuleNotFoundError:
+                pass
 
 _import_impls()
 
