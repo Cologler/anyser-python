@@ -40,6 +40,10 @@ def bytes2str(b: bytes, options: dict) -> str:
 class ISerializer:
     format_name: str
 
+    def __init__(self):
+        super().__init__()
+        assert self.format_name
+
     def is_overrided(self, name: str):
         return getattr(type(self), name, None) is not getattr(ISerializer, name, None)
 

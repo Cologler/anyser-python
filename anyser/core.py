@@ -49,8 +49,7 @@ def capture_error():
     'catch serialize error in context'
     try:
         yield
-    except (NotImplementedError, SerializeError) as e:
-        raise
+    except (NotImplementedError, SerializeError, NotSupportError) as e:
         raise e from None
     except Exception as e:
         raise SerializeError(e)
@@ -65,7 +64,7 @@ def loads(s: str, format: str, **options) -> Any:
     with capture_error():
         return serializer.loads(s, options)
 
-def loadb(b: bytes, **options) -> Any:
+def loadb(b: bytes, format: str, **options) -> Any:
     'load a obj from bytes.'
     if not isinstance(b, bytes):
         raise TypeError
@@ -73,7 +72,7 @@ def loadb(b: bytes, **options) -> Any:
     if not serializer:
         raise FormatNotFoundError(format)
     with capture_error():
-        return serializer.loads(b, options)
+        return serializer.loadb(b, options)
 
 def dumps(obj, format: str, **options) -> str:
     '''
