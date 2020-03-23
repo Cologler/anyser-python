@@ -10,3 +10,6 @@ class FormatNotFoundError(Exception):
 
 class SerializeError(Exception):
     pass
+
+class NotSupportError(Exception):
+    pass
