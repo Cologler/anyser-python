@@ -7,11 +7,35 @@
 
 from typing import Any
 
+class Options:
+    encoding = 'encoding'
+    ensure_ascii = 'ensure_ascii'
+    indent = 'indent'
+    origin_kwargs = 'origin_kwargs'
+
+    @classmethod
+    def pop_encoding(cls, options: dict):
+        return options.pop(cls.encoding, 'utf-8')
+
+    @classmethod
+    def pop_ensure_ascii(cls, options: dict):
+        return options.pop(cls.ensure_ascii, True)
+
+    @classmethod
+    def pop_indent(cls, options: dict):
+        return options.pop(cls.indent, None)
+
+    @classmethod
+    def pop_origin_kwargs(cls, options: dict):
+        return options.pop(cls.origin_kwargs, {})
+
+
 def str2bytes(s: str, options: dict) -> bytes:
-    return s.encode(options.pop('encoding', 'utf-8'))
+    return s.encode(Options.pop_encoding(options))
 
 def bytes2str(b: bytes, options: dict) -> str:
-    return b.decode(options.pop('encoding', 'utf-8'))
+    return b.decode(Options.pop_encoding(options))
+
 
 class ISerializer:
     format_name: str

@@ -16,13 +16,15 @@ class JsonSerializer(ISerializer):
 
     def loads(self, s: str, options: dict):
         kwargs = {}
+        kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
         return json.loads(s, **kwargs)
 
     def dumps(self, obj, options: dict) -> str:
         kwargs = {
-            'ensure_ascii': options.pop('ensure_ascii', True),
-            'indent': options.pop('indent', None),
+            'ensure_ascii': Options.pop_ensure_ascii(options),
+            'indent': Options.pop_indent(options),
         }
+        kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
         return json.dumps(obj, **kwargs)

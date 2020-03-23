@@ -83,6 +83,7 @@ def dumps(obj, format: str, **options) -> str:
 
     - `ensure_ascii` - `bool`
     - `indent` - `int?`
+    - `origin_kwargs` - `dict`, pass to serializer
     '''
     serializer = find_serializer(format)
     if not serializer:
@@ -99,6 +100,7 @@ def dumpb(obj, format: str, **options) -> bytes:
     - `encoding` - `str`, default `utf-8`.
     - `ensure_ascii` - `bool`, default `True`.
     - `indent` - `int?`, default `None`.
+    - `origin_kwargs` - `dict`, pass to serializer
     '''
     serializer = find_serializer(format)
     if not serializer:
