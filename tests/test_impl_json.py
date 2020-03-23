@@ -7,7 +7,7 @@
 
 from anyser import *
 
-def test_json_equals():
+def test_json_default():
     data = {
         'a': 1,
         'b': '2',
