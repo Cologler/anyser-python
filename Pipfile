@@ -5,5 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pyyaml = "*"
+toml = "*"
+json5 = "*"
+setupmeta-builder = "*"
 
 [packages]
