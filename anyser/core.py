@@ -11,18 +11,6 @@ from contextlib import contextmanager
 from .err import *
 from .abc import *
 
-EXT2FORMAT_MAP = {
-    '.json' : 'json',
-    '.json5': 'json5',
-    '.yaml' : 'yaml',
-    '.yml' : 'yaml',
-    '.toml' : 'toml',
-}
-
-NAME2FORMAT_MAP = {
-    'pipfile' : 'pipfile'
-}
-
 _REGISTERED_SERIALIZERS = {}
 
 def register_format(*keys):
