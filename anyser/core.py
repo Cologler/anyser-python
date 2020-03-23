@@ -80,8 +80,8 @@ def dumps(obj, format: str, **options) -> str:
 
     options:
 
-    - `ensure_ascii` - `bool`
-    - `indent` - `int?`
+    - `ensure_ascii` - `bool`, default `True`.
+    - `indent` - `int?`, default `None`.
     - `origin_kwargs` - `dict`, pass to serializer
     '''
     serializer = find_serializer(format)
