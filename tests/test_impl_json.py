@@ -6,18 +6,43 @@
 # ----------
 
 from anyser import *
+from io import BytesIO, StringIO
 
-def test_json_default():
-    data = {
-        'a': 1,
-        'b': '2',
-        'c': {
-            'd': 'ddddd'
-        }
+data_1 = {
+    'a': 1,
+    'b': '2',
+    'c': {
+        'd': 'ddddd'
     }
+}
 
-    s = dumps(data, 'json')
-    assert loads(s, 'json') == data
+def test_json_dumps():
+    s = dumps(data_1, 'json')
+    assert isinstance(s, str)
+
+def test_json_dumpb():
+    b = dumpb(data_1, 'json')
+    assert isinstance(b, bytes)
+
+def test_json_dumpf_str():
+    fp = StringIO()
+    dumpf(data_1, fp, 'json')
+    assert fp.getvalue() == '{"a": 1, "b": "2", "c": {"d": "ddddd"}}'
+
+def test_json_dumpf_bytes():
+    fp = BytesIO()
+    dumpf(data_1, fp, 'json')
+    assert fp.getvalue() == b'{"a": 1, "b": "2", "c": {"d": "ddddd"}}'
+
+def test_json_load():
+    assert data_1 == load(dumps(data_1, 'json'), 'json')
+    assert data_1 == load(dumpb(data_1, 'json'), 'json')
+
+def test_json_loads():
+    assert data_1 == loads(dumps(data_1, 'json'), 'json')
+
+def test_json_loadb():
+    assert data_1 == loadb(dumpb(data_1, 'json'), 'json')
 
 def test_json_dumps_ensure_ascii():
     data = '👍'
