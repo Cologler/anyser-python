@@ -112,7 +112,7 @@ def dumpb(obj, format: str, **options) -> bytes:
     with capture_error():
         return serializer.dumpb(obj, options)
 
-def dumpf(self, obj, fp: IOBase, options: dict):
+def dumpf(obj, fp: IOBase, format: str, **options):
     '''
     dump a obj into the file-like object.
 
