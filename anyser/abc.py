@@ -5,7 +5,9 @@
 #
 # ----------
 
-from typing import Any
+from typing import Any, Union
+from io import IOBase, BytesIO, TextIOBase
+from _io import _TextIOBase
 
 class Options:
     encoding = 'encoding'
@@ -51,6 +53,18 @@ class ISerializer:
         if options:
             raise TypeError(f'unexpected options: {options}')
 
+    def load(self, s: Union[str, bytes, IOBase], options: dict) -> Any:
+        'load a obj from source.'
+
+        if isinstance(s, str):
+            return self.loads(s, options)
+        elif isinstance(s, bytes):
+            return self.loadb(s, options)
+        elif isinstance(s, IOBase):
+            return self.loadf(s, options)
+        else:
+            raise TypeError(f'except (str, bytes, IOBase), got {type(s)}.')
+
     def loads(self, s: str, options: dict) -> Any:
         'load a obj from str.'
 
@@ -67,6 +81,12 @@ class ISerializer:
 
         raise NotImplementedError
 
+    def loadf(self, fp: IOBase, options: dict) -> Any:
+        'load a obj from a file-like object.'
+
+        assert fp.readable()
+        return self.load(fp.read(), options)
+
     def dumps(self, obj, options: dict) -> str:
         'dump a obj to str.'
 
@@ -82,3 +102,12 @@ class ISerializer:
             return str2bytes(self.dumps(obj, options), options)
 
         raise NotImplementedError
+
+    def dumpf(self, obj, fp: IOBase, options: dict):
+        'dump a obj into the file-like object.'
+
+        assert fp.writable()
+        if isinstance(fp, _TextIOBase):
+            fp.write(self.dumps(obj, options))
+        else:
+            fp.write(self.dumpb(obj, options))
