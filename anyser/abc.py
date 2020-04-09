@@ -6,7 +6,7 @@
 # ----------
 
 from typing import Any, Union
-from io import IOBase, BytesIO, TextIOBase
+from io import IOBase, BytesIO, TextIOBase, StringIO
 from _io import _TextIOBase
 
 class Options:
@@ -71,6 +71,9 @@ class ISerializer:
         if self.is_overrided('loadb'):
             return self.loadb(str2bytes(s, options), options)
 
+        if self.is_overrided('loadf'):
+            return self.loadf(StringIO(s), options)
+
         raise NotImplementedError
 
     def loadb(self, b: bytes, options: dict) -> Any:
@@ -78,6 +81,9 @@ class ISerializer:
 
         if self.is_overrided('loads'):
             return self.loads(bytes2str(b, options), options)
+
+        if self.is_overrided('loadf'):
+            return self.loadf(BytesIO(b), options)
 
         raise NotImplementedError
 
@@ -93,6 +99,13 @@ class ISerializer:
         if self.is_overrided('dumpb'):
             return bytes2str(self.dumpb(obj, options), options)
 
+        if self.is_overrided('dumpf'):
+            fp = StringIO()
+            self.dumpf(obj, fp, options)
+            val = fp.getvalue()
+            assert isinstance(val, str)
+            return val
+
         raise NotImplementedError
 
     def dumpb(self, obj, options: dict) -> bytes:
@@ -100,6 +113,13 @@ class ISerializer:
 
         if self.is_overrided('dumps'):
             return str2bytes(self.dumps(obj, options), options)
+
+        if self.is_overrided('dumpf'):
+            fp = BytesIO()
+            self.dumpf(obj, fp, options)
+            val = fp.getvalue()
+            assert isinstance(val, bytes)
+            return val
 
         raise NotImplementedError
 

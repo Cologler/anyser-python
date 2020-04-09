@@ -7,7 +7,11 @@
 
 import os
 import importlib
-from .core import loads, loadb, dumps, dumpb
+from .core import (
+    load,
+    loads, loadb, loadf,
+    dumps, dumpb, dumpf
+)
 
 def _import_impls():
     impls_root = os.path.join(os.path.dirname(__file__), 'impls')
@@ -21,6 +25,7 @@ def _import_impls():
 _import_impls()
 
 __all__ = (
-    'loads', 'dumps',
-    'loadb', 'dumpb'
+    'load',
+    'loads', 'dumps', 'loadf',
+    'loadb', 'dumpb', 'dumpf'
 )

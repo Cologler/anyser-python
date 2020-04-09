@@ -5,8 +5,9 @@
 #
 # ----------
 
-from typing import Optional, Any
+from typing import Optional, Any, Union
 from contextlib import contextmanager
+from io import IOBase
 
 from .err import *
 from .abc import *
@@ -32,6 +33,14 @@ def find_serializer(format: str) -> Optional[ISerializer]:
     if cls is not None:
         return cls()
 
+
+def _get_required_serializer(format: str) -> ISerializer:
+    serializer = find_serializer(format)
+    if not serializer:
+        raise FormatNotFoundError(format)
+    return serializer
+
+
 @contextmanager
 def capture_error():
     'catch serialize error in context'
@@ -42,13 +51,19 @@ def capture_error():
     except Exception as e:
         raise SerializeError(e)
 
+def load(s: Union[str, bytes, IOBase], format: str, **options) -> Any:
+    'load a obj from source.'
+    if not isinstance(s, (str, bytes, IOBase)):
+        raise TypeError
+    serializer = _get_required_serializer(format)
+    with capture_error():
+        return serializer.load(s, options)
+
 def loads(s: str, format: str, **options) -> Any:
     'load a obj from str.'
     if not isinstance(s, str):
         raise TypeError
-    serializer = find_serializer(format)
-    if not serializer:
-        raise FormatNotFoundError(format)
+    serializer = _get_required_serializer(format)
     with capture_error():
         return serializer.loads(s, options)
 
@@ -56,11 +71,17 @@ def loadb(b: bytes, format: str, **options) -> Any:
     'load a obj from bytes.'
     if not isinstance(b, bytes):
         raise TypeError
-    serializer = find_serializer(format)
-    if not serializer:
-        raise FormatNotFoundError(format)
+    serializer = _get_required_serializer(format)
     with capture_error():
         return serializer.loadb(b, options)
+
+def loadf(fp: IOBase, format: str, **options) -> Any:
+    'load a obj from a file-like object.'
+    if not isinstance(fp, IOBase):
+        raise TypeError
+    serializer = _get_required_serializer(format)
+    with capture_error():
+        return serializer.loadf(fp, options)
 
 def dumps(obj, format: str, **options) -> str:
     '''
@@ -72,9 +93,7 @@ def dumps(obj, format: str, **options) -> str:
     - `indent` - `int?`, default `None`.
     - `origin_kwargs` - `dict`, pass to serializer
     '''
-    serializer = find_serializer(format)
-    if not serializer:
-        raise FormatNotFoundError(format)
+    serializer = _get_required_serializer(format)
     with capture_error():
         return serializer.dumps(obj, options)
 
@@ -89,8 +108,23 @@ def dumpb(obj, format: str, **options) -> bytes:
     - `indent` - `int?`, default `None`.
     - `origin_kwargs` - `dict`, pass to serializer
     '''
-    serializer = find_serializer(format)
-    if not serializer:
-        raise FormatNotFoundError(format)
+    serializer = _get_required_serializer(format)
     with capture_error():
         return serializer.dumpb(obj, options)
+
+def dumpf(self, obj, fp: IOBase, options: dict):
+    '''
+    dump a obj into the file-like object.
+
+    options:
+
+    - `encoding` - `str`, default `utf-8`.
+    - `ensure_ascii` - `bool`, default `True`.
+    - `indent` - `int?`, default `None`.
+    - `origin_kwargs` - `dict`, pass to serializer
+    '''
+    if not isinstance(fp, IOBase):
+        raise TypeError
+    serializer = _get_required_serializer(format)
+    with capture_error():
+        return serializer.dumpf(obj, fp, options)
