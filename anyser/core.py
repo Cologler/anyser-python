@@ -25,6 +25,13 @@ def register_format(*keys):
     return decorator
 
 
+def get_available_formats() -> list:
+    '''
+    get all available formats.
+    '''
+    return list(_REGISTERED_SERIALIZERS)
+
+
 def find_serializer(format: str) -> Optional[ISerializer]:
     if not isinstance(format, str):
         raise TypeError

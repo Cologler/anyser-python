@@ -10,7 +10,8 @@ import importlib
 from .core import (
     load,
     loads, loadb, loadf,
-    dumps, dumpb, dumpf
+    dumps, dumpb, dumpf,
+    get_available_formats,
 )
 
 def _import_impls():
@@ -27,5 +28,6 @@ _import_impls()
 __all__ = (
     'load',
     'loads', 'dumps', 'loadf',
-    'loadb', 'dumpb', 'dumpf'
+    'loadb', 'dumpb', 'dumpf',
+    'get_available_formats'
 )

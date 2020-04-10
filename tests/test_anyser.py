@@ -24,3 +24,13 @@ def test_use_unknown_format():
         loads('', 'ssssss')
     with pytest.raises(FormatNotFoundError):
         dumps('', 'ssssss')
+
+def test_get_available_formats():
+    assert set(get_available_formats()) == {
+        'json', '.json',
+        'pickle',
+        'json5', '.json5',
+        'toml',  '.toml',
+        'xml', '.xml',
+        'yaml', '.yaml', '.yml',
+    }
