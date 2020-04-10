@@ -47,48 +47,33 @@ def _get_required_serializer(format: str) -> ISerializer:
         raise FormatNotFoundError(format)
     return serializer
 
-
-@contextmanager
-def capture_error():
-    'catch serialize error in context'
-    try:
-        yield
-    except (NotImplementedError, SerializeError, NotSupportError) as e:
-        raise e from None
-    except Exception as e:
-        raise SerializeError(e)
-
 def load(s: Union[str, bytes, IOBase], format: str, **options) -> Any:
     'load a obj from source.'
     if not isinstance(s, (str, bytes, IOBase)):
         raise TypeError
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.load(s, options)
+    return serializer.load(s, options)
 
 def loads(s: str, format: str, **options) -> Any:
     'load a obj from str.'
     if not isinstance(s, str):
         raise TypeError
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.loads(s, options)
+    return serializer.loads(s, options)
 
 def loadb(b: bytes, format: str, **options) -> Any:
     'load a obj from bytes.'
     if not isinstance(b, bytes):
         raise TypeError
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.loadb(b, options)
+    return serializer.loadb(b, options)
 
 def loadf(fp: IOBase, format: str, **options) -> Any:
     'load a obj from a file-like object.'
     if not isinstance(fp, IOBase):
         raise TypeError
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.loadf(fp, options)
+    return serializer.loadf(fp, options)
 
 def dumps(obj, format: str, **options) -> str:
     '''
@@ -101,8 +86,7 @@ def dumps(obj, format: str, **options) -> str:
     - `origin_kwargs` - `dict`, pass to serializer
     '''
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.dumps(obj, options)
+    return serializer.dumps(obj, options)
 
 def dumpb(obj, format: str, **options) -> bytes:
     '''
@@ -116,8 +100,7 @@ def dumpb(obj, format: str, **options) -> bytes:
     - `origin_kwargs` - `dict`, pass to serializer
     '''
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.dumpb(obj, options)
+    return serializer.dumpb(obj, options)
 
 def dumpf(obj, fp: IOBase, format: str, **options):
     '''
@@ -133,5 +116,4 @@ def dumpf(obj, fp: IOBase, format: str, **options):
     if not isinstance(fp, IOBase):
         raise TypeError
     serializer = _get_required_serializer(format)
-    with capture_error():
-        return serializer.dumpf(obj, fp, options)
+    return serializer.dumpf(obj, fp, options)
