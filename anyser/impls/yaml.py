@@ -6,7 +6,9 @@
 # ----------
 
 import yaml
+import yaml.scanner
 
+from ..err import SerializeError
 from ..abc import *
 from ..core import register_format
 
@@ -18,7 +20,10 @@ class YamlSerializer(ISerializer):
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return yaml.safe_load(s, **kwargs)
+        try:
+            return yaml.safe_load(s, **kwargs)
+        except yaml.scanner.ScannerError as e:
+            raise SerializeError(e)
 
     def dumps(self, obj, options: dict) -> str:
         kwargs = {

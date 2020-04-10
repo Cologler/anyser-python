@@ -7,6 +7,7 @@
 
 import json5
 
+from ..err import SerializeError
 from ..abc import *
 from ..core import register_format
 
@@ -18,7 +19,10 @@ class Json5Serializer(ISerializer):
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return json5.loads(s, **kwargs)
+        try:
+            return json5.loads(s, **kwargs)
+        except ValueError as e:
+            raise SerializeError(e)
 
     def dumps(self, obj, options: dict) -> str:
         kwargs = {
@@ -27,4 +31,7 @@ class Json5Serializer(ISerializer):
         }
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return json5.dumps(obj, **kwargs)
+        try:
+            return json5.dumps(obj, **kwargs)
+        except TypeError as e:
+            raise SerializeError(e)

@@ -7,6 +7,7 @@
 
 import toml
 
+from ..err import SerializeError
 from ..abc import *
 from ..core import register_format
 
@@ -18,10 +19,16 @@ class TomlSerializer(ISerializer):
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return toml.loads(s, **kwargs)
+        try:
+            return toml.loads(s, **kwargs)
+        except toml.decoder.TomlDecodeError as e:
+            raise SerializeError(e)
 
     def dumps(self, obj, options: dict) -> str:
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return toml.dumps(obj, **kwargs)
+        try:
+            return toml.dumps(obj, **kwargs)
+        except TypeError as e:
+            raise SerializeError(e)

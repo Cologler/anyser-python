@@ -5,6 +5,8 @@
 #
 # ----------
 
+import pytest
+
 from anyser import *
 
 def test_yaml_default():
@@ -28,3 +30,7 @@ def test_yaml_dumps_indent():
     data = {'a': 1, 'b': {'c': 7}}
     assert dumps(data, 'yaml') ==           'a: 1\nb:\n  c: 7\n'
     assert dumps(data, 'yaml', indent=4) == 'a: 1\nb:\n    c: 7\n'
+
+def test_yaml_serialize_error():
+    with pytest.raises(SerializeError):
+        loads('"', 'yaml')

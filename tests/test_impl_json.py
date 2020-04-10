@@ -5,6 +5,8 @@
 #
 # ----------
 
+import pytest
+
 from anyser import *
 from io import BytesIO, StringIO
 
@@ -51,3 +53,9 @@ def test_json_dumps_ensure_ascii():
 def test_json_dumps_indent():
     data = {'a': 1, 'b': {}}
     assert dumps(data, 'json', indent=2) == '{\n  "a": 1,\n  "b": {}\n}'
+
+def test_json_serialize_error():
+    with pytest.raises(SerializeError):
+        loads('s', 'json')
+    with pytest.raises(SerializeError):
+        dumps(object(), 'json')

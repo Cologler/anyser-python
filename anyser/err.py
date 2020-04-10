@@ -9,6 +9,7 @@ class FormatNotFoundError(Exception):
     pass
 
 class SerializeError(Exception):
+    'raise when serialize or deserialize from bad data.'
     pass
 
 class NotSupportError(Exception):

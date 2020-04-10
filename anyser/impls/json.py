@@ -6,7 +6,9 @@
 # ----------
 
 import json
+import json.decoder
 
+from ..err import SerializeError
 from ..abc import *
 from ..core import register_format
 
@@ -18,7 +20,10 @@ class JsonSerializer(ISerializer):
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return json.loads(s, **kwargs)
+        try:
+            return json.loads(s, **kwargs)
+        except json.decoder.JSONDecodeError as e:
+            raise SerializeError(e)
 
     def dumps(self, obj, options: dict) -> str:
         kwargs = {
@@ -27,4 +32,7 @@ class JsonSerializer(ISerializer):
         }
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return json.dumps(obj, **kwargs)
+        try:
+            return json.dumps(obj, **kwargs)
+        except TypeError as e:
+            raise SerializeError(e)

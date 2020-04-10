@@ -7,11 +7,14 @@
 
 import os
 import importlib
+
+from .err import FormatNotFoundError, SerializeError, NotSupportError
+from .abc import ISerializer
 from .core import (
     load,
     loads, loadb, loadf,
     dumps, dumpb, dumpf,
-    get_available_formats,
+    register_format, get_available_formats,
 )
 
 def _import_impls():
@@ -26,8 +29,10 @@ def _import_impls():
 _import_impls()
 
 __all__ = (
+    'FormatNotFoundError', 'SerializeError', 'NotSupportError',
+    'ISerializer',
     'load',
     'loads', 'dumps', 'loadf',
     'loadb', 'dumpb', 'dumpf',
-    'get_available_formats'
+    'register_format', 'get_available_formats',
 )

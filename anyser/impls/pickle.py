@@ -7,6 +7,7 @@
 
 import pickle
 
+from ..err import SerializeError
 from ..abc import *
 from ..err import NotSupportError
 from ..core import register_format
@@ -25,10 +26,16 @@ class PickleSerializer(ISerializer):
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return pickle.loads(s, **kwargs)
+        try:
+            return pickle.loads(s, **kwargs)
+        except pickle.UnpicklingError as e:
+            raise SerializeError(e)
 
     def dumpb(self, obj, options: dict) -> bytes:
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return pickle.dumps(obj, **kwargs)
+        try:
+            return pickle.dumps(obj, **kwargs)
+        except pickle.PicklingError as e:
+            raise SerializeError(e)

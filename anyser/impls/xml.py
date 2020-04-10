@@ -7,6 +7,7 @@
 
 import xml.etree.ElementTree as et
 
+from ..err import SerializeError
 from ..abc import *
 from ..core import register_format
 
@@ -18,10 +19,17 @@ class XmlSerializer(ISerializer):
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return et.fromstring(s)
+        try:
+            return et.fromstring(s)
+        except et.ParseError as e:
+            raise SerializeError(e)
 
     def dumps(self, obj, options: dict) -> str:
         kwargs = {}
         kwargs.update(Options.pop_origin_kwargs(options))
         self.check_options(options)
-        return et.tostring(obj, encoding='unicode', **kwargs)
+        try:
+            return et.tostring(obj, encoding='unicode', **kwargs)
+        except AttributeError as e:
+            raise SerializeError(e)
+

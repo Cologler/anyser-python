@@ -5,6 +5,8 @@
 #
 # ----------
 
+import pytest
+
 from anyser import *
 
 def test_pickle_default():
@@ -18,3 +20,7 @@ def test_pickle_default():
 
     s = dumpb(data, 'pickle')
     assert loadb(s, 'pickle') == data
+
+def test_pickle_serialize_error():
+    with pytest.raises(SerializeError):
+        loadb(b's', 'pickle')
