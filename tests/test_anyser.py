@@ -33,4 +33,5 @@ def test_get_available_formats():
         'toml',  '.toml',
         'xml', '.xml',
         'yaml', '.yaml', '.yml',
+        'bson', '.bson',
     }
