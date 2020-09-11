@@ -34,4 +34,5 @@ def test_get_available_formats():
         'xml', '.xml',
         'yaml', '.yaml', '.yml',
         'bson', '.bson',
+        'bencode', '.torrent',
     }

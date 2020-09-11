@@ -10,5 +10,6 @@ toml = "*"
 json5 = "*"
 setupmeta-builder = "*"
 bson = "*"
+"bencode.py" = "*"
 
 [packages]
