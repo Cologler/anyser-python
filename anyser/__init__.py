@@ -10,7 +10,8 @@ import importlib
 
 from .err import FormatNotFoundError, SerializeError, NotSupportError
 from .abc import ISerializer
-from .core import (
+from .core import ComplexSerializer
+from .g import (
     load,
     loads, loadb, loadf,
     dumps, dumpb, dumpf,
@@ -31,6 +32,7 @@ _import_impls()
 __all__ = (
     'FormatNotFoundError', 'SerializeError', 'NotSupportError',
     'ISerializer',
+    'ComplexSerializer',
     'load',
     'loads', 'dumps', 'loadf',
     'loadb', 'dumpb', 'dumpf',
