@@ -5,6 +5,8 @@
 #
 # ----------
 
+import io
+
 import pytest
 
 from anyser import *
@@ -36,3 +38,17 @@ def test_get_available_formats():
         'bson', '.bson',
         'bencode', '.torrent',
     }
+
+def test_options_strict():
+    loadb(b'{}', 'json', encoding='utf-8')
+    loadf(io.BytesIO(b'{}'), 'json', encoding='utf-8')
+
+    with pytest.raises(ValueError):
+        loads('{}', 'json', encoding='utf-8')
+
+    with pytest.raises(ValueError):
+        loadf(io.StringIO('{}'), 'json', encoding='utf-8')
+
+def test_options_not_strict():
+    loads('{}', 'json', encoding='utf-8', strict=False)
+    loadf(io.StringIO('{}'), 'json', encoding='utf-8', strict=False)

@@ -50,8 +50,8 @@ class ISerializer:
         return getattr(type(self), name, None) is not getattr(ISerializer, name, None)
 
     def check_options(self, options: dict):
-        if options:
-            raise TypeError(f'unexpected options: {options}')
+        if options.pop('strict', True) and options:
+            raise ValueError(f'unexpected options: {options}')
 
     def load(self, s: Union[str, bytes, IOBase], options: dict) -> Any:
         'load a obj from source.'
