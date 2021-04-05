@@ -80,7 +80,13 @@ class ComplexSerializer:
         return serializer.loadb(b, options)
 
     def loadf(self, fp: IOBase, format: str, **options) -> Any:
-        'load a obj from a file-like object.'
+        '''
+        load a obj from a file-like object.
+
+        options:
+
+        - `size_limit` - `int`, default `None`; limit size to read.
+        '''
         if not isinstance(fp, IOBase):
             raise TypeError
         serializer = self._get_required_serializer(format)
