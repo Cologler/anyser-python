@@ -9,11 +9,14 @@ from typing import Any, Union
 from io import IOBase, BytesIO, TextIOBase, StringIO
 from _io import _TextIOBase
 
+from .err import SizeOverflowError
+
 class Options:
     encoding = 'encoding'
     ensure_ascii = 'ensure_ascii'
     indent = 'indent'
     origin_kwargs = 'origin_kwargs'
+    size_limit = 'size_limit'
 
     @classmethod
     def pop_encoding(cls, options: dict):
@@ -31,6 +34,20 @@ class Options:
     def pop_origin_kwargs(cls, options: dict):
         return options.pop(cls.origin_kwargs, {})
 
+    @classmethod
+    def pop_size_limit(cls, options: dict):
+        '''
+        get the size limit for the file or `None`.
+
+        this also checked the value of `size_limit` and ensure it > 0.
+        '''
+        size_limit = options.pop(cls.size_limit, None)
+        if size_limit is not None:
+            if not isinstance(size_limit, int):
+                raise TypeError(f'size_limit expected int, got {type(size_limit)}.')
+            if size_limit <= 0:
+                raise ValueError('size_limit cannot <= 0.')
+        return size_limit
 
 def str2bytes(s: str, options: dict) -> bytes:
     return s.encode(Options.pop_encoding(options))
@@ -91,7 +108,16 @@ class ISerializer:
         'load a obj from a file-like object.'
 
         assert fp.readable()
-        return self.load(fp.read(), options)
+
+        size_limit = Options.pop_size_limit(options)
+        if size_limit is None:
+            data = fp.read()
+        else:
+            data = fp.read(size_limit+1)
+            if len(data) > size_limit:
+                raise SizeOverflowError
+
+        return self.load(data, options)
 
     def dumps(self, obj, options: dict) -> str:
         'dump a obj to str.'

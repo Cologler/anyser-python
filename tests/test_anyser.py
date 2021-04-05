@@ -10,7 +10,7 @@ import io
 import pytest
 
 from anyser import *
-from anyser.err import FormatNotFoundError
+from anyser.err import FormatNotFoundError, SizeOverflowError
 
 def test_imported_std():
     from anyser.core import _REGISTERED_SERIALIZERS
@@ -52,3 +52,16 @@ def test_options_strict():
 def test_options_not_strict():
     loads('{}', 'json', encoding='utf-8', strict=False)
     loadf(io.StringIO('{}'), 'json', encoding='utf-8', strict=False)
+
+def test_options_size_limit():
+    with pytest.raises(TypeError):
+        loadf(io.StringIO('{}'), 'json', size_limit=1.1)
+
+    with pytest.raises(ValueError):
+        loadf(io.StringIO('{}'), 'json', size_limit=0)
+
+    with pytest.raises(SizeOverflowError):
+        loadf(io.StringIO('{}'), 'json', size_limit=1)
+
+    loadf(io.StringIO('{}'), 'json', size_limit=2)
+    loadf(io.StringIO('{}'), 'json', size_limit=3)

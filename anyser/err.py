@@ -6,6 +6,7 @@
 # ----------
 
 class FormatNotFoundError(Exception):
+    'raise when a format is not found.'
     pass
 
 class SerializeError(Exception):
@@ -13,4 +14,7 @@ class SerializeError(Exception):
     pass
 
 class NotSupportError(Exception):
+    pass
+
+class SizeOverflowError(Exception):
     pass
